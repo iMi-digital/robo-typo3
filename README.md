@@ -6,11 +6,21 @@ Robo task runner.
 
 It requires typo3 console.
 
-Commands:
+Commands
+--------
+
+Execute typo3cms
 
     $this->taskTypo3Stack()->exec($command)
     
-Soon:
+Shortcut for the above:
+    
+    $this->_typo3cms($command);
 
-    $this->taskTypo3Stack()->execDbDump(filename)
-    $this->taskTypo3Stack()->execDbDumpStripped(filename)
+Dump Database to file    
+
+    $this->taskTypo3Stack()->execDbDump($fileName)
+    
+Dump Database to file, excluding cache files, inspired by magerun
+
+    $this->taskTypo3Stack()->execDbDumpExclude(fileName)
