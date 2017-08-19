@@ -1,0 +1,19 @@
+{
+    "name": "imi/robo-typo3",
+    "description": "Typo3 Tasks for Robo task runner",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "iMi digital GmbH",
+            "email": "a.menk@imi.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "iMi\\RoboTypo3\\" : "src"
+        }
+    },
+    "require": {
+        "consolidation/robo": "^1.0.0"
+    }
+}
