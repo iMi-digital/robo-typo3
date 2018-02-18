@@ -18,13 +18,30 @@ trait loadShortcuts {
         ];
     }
 
+    protected $t3conf = './public/typo3conf/';
+
+    protected $t3src = './public/typo3/';
+
+    /**
+     * Load the Database Configuration
+     */
+    protected function typo3dbLoadConfig() {
+        $databaseConfiguration = $this->t3conf . 'AdditionalConfiguration.php';
+        if (is_file($databaseConfiguration)) {
+            require_once $databaseConfiguration;
+        }
+
+        $host     = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'];
+        $username = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user'];
+        $password = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'];
+        $dbname = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
+
+        return compact('host', 'username', 'password', 'dbname');
+    }
+
     protected function _typo3dbDevelopmentDump( $filename ) {
-        $this->taskDatabaseStack( [
-            'dbname'   => 'club_sata_com',
-            'username' => 'root',
-            'password' => 'root',
-            'host'     => 'localhost'
-        ], $this->_typo3getTableDefinitions() )->setFilename( $filename )
+        $this->taskDatabaseStack( $this->typo3dbLoadConfig(),
+            $this->_typo3getTableDefinitions() )->setFilename( $filename )
              ->setIsHumanReadable( true )
              ->setAddTime( 'no' )
              ->setStrip( '@development' )

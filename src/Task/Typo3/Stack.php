@@ -11,16 +11,22 @@ class Stack extends CommandStack
 	 *
 	 * @throws \Robo\Exception\TaskException
 	 */
-	public function __construct($pathToTypo3Cms = null)
-	{
-		$this->executable = $pathToTypo3Cms;
-		if (!$this->executable) {
-			$this->executable = $this->findExecutable('typo3cms');
-		}
-		if (!$this->executable) {
-			throw new TaskException(__CLASS__, "typo3cms installation could be found.");
-		}
-	}
+    public function __construct($pathToTypo3Cms = null)
+    {
+        $this->executable = $pathToTypo3Cms;
+        if (!$this->executable) {
+            $this->executable = $this->findExecutable('typo3cms');
+        }
+        if (!$this->executable) {
+            $cmd = 'public/typo3cms';
+            if (file_exists($cmd)) {
+                $this->executable = $cmd;
+            }
+        }
+        if (!$this->executable) {
+            throw new TaskException(__CLASS__, "typo3cms installation could be found.");
+        }
+    }
 
     /**
      * {@inheritdoc}
