@@ -2,6 +2,8 @@
 
 namespace iMi\RoboTypo3\Task\Typo3;
 
+use Robo\Task\Filesystem\FilesystemStack;
+
 trait loadShortcuts {
     /**
      * @param string $url
@@ -19,29 +21,22 @@ trait loadShortcuts {
     }
 
 
-    /**
-     * Load the Database Configuration
-     */
-    protected function typo3dbLoadConfig() {
-        $databaseConfiguration = $this->t3conf . 'AdditionalConfiguration.php';
-        if (is_file($databaseConfiguration)) {
-            require_once $databaseConfiguration;
+    protected function _writeAdditionalConfigurationFile(
+        $data,
+        $mapVariablesToValues = [
+            'dbName'     => 'DATABASE',
+            'dbHost'     => 'HOST',
+            'dbUser'     => 'USERNAME',
+            'dbPassword' => 'PASSWORD',
+        ]
+    ) {
+        $fileSystemTask = $this->task( FilesystemStack::class );
+        $target = 'public/typo3conf/AdditionalConfiguration.php';
+        $fileSystemTask->copy( 'public/typo3conf/AdditionalConfiguration.example.php', $target )->run();
+        foreach ( $mapVariablesToValues as $dataKey => $configKey ) {
+            $value = isset( $data[ $dataKey ] ) ? $data[ $dataKey ] : '';
+            $this->taskReplaceInFile( $target )->from( '#' . $configKey . '#' )->to( $value )->run();
         }
-
-        $host     = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'];
-        $username = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['user'];
-        $password = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['password'];
-        $dbname = $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['dbname'];
-
-        return compact('host', 'username', 'password', 'dbname');
     }
 
-    protected function _typo3dbDevelopmentDump( $filename ) {
-        $this->taskDatabaseStack( $this->typo3dbLoadConfig(),
-            $this->_typo3getTableDefinitions() )->setFilename( $filename )
-             ->setIsHumanReadable( true )
-             ->setAddTime( 'no' )
-             ->setStrip( '@development' )
-             ->dump()->run();
-    }
 }
