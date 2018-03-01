@@ -18,9 +18,6 @@ trait loadShortcuts {
         ];
     }
 
-    protected $t3conf = './public/typo3conf/';
-
-    protected $t3src = './public/typo3/';
 
     /**
      * Load the Database Configuration

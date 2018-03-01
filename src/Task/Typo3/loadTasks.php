@@ -12,4 +12,21 @@ trait loadTasks
     {
         return $this->task(Stack::class, $pathToTypo3Cms);
     }
+
+
+    protected function taskTypo3DatabaseStack()
+    {
+        return $this->task(DatabaseStack::class);
+    }
+
+    protected function taskTypo3DatabaseDumpStack()
+    {
+        return $this->task(DumpStack::class);
+    }
+
+    protected function taskTypo3DatabaseImportStack()
+    {
+        return $this->task(ImportStack::class);
+    }
+
 }
