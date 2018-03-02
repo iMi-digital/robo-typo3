@@ -50,7 +50,7 @@ class RoboFile extends \Robo\Tasks {
      * Imports a dump from ./sql/
      * By default the master.sql is imported
      *
-     * @param string $fileName Filename (in sql/, do not add the path)
+     * @param string $fileName Optional Filename (in sql/, do not add the path)
      */
     public function dbReplace( $fileName = 'master.sql' ) {
         $this->taskTypo3DatabaseDumpStack()
@@ -76,9 +76,7 @@ class RoboFile extends \Robo\Tasks {
      * You can give the filename w/o a path as parameter e.g. "temp_backup.sql"
      * If no filename is given, then the default will be "<current branch>.sql"
      *
-     * @param string $filename Optional filename w/o path
-     * @option $full By default, the cache tables are excluded,
-     *               by setting the --full you include the cache tables
+     * @param string $fileName Optional filename w/o path
      */
     public function dbDump( $fileName = "master.sql" ) {
         $this->taskTypo3Stack()->execDbDumpExclude( 'sql/' . $fileName )->run();
