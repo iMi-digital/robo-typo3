@@ -59,6 +59,7 @@ class RoboFile extends \Robo\Tasks {
         $this->taskTypo3DatabaseImportStack()
              ->setFilename( 'sql/' . $fileName )
              ->run();
+        $this->updateDatabase();
     }
 
 
@@ -79,8 +80,8 @@ class RoboFile extends \Robo\Tasks {
      * @option $full By default, the cache tables are excluded,
      *               by setting the --full you include the cache tables
      */
-    public function dbExport( $filename = "sql/master.sql" ) {
-        $this->taskTypo3Stack()->execDbDumpExclude( $filename )->run();
+    public function dbDump( $fileName = "master.sql" ) {
+        $this->taskTypo3Stack()->execDbDumpExclude( 'sql/' . $fileName )->run();
     }
 
     /**
