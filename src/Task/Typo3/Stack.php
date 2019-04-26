@@ -29,6 +29,15 @@ class Stack extends CommandStack
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function run()
+    {
+        $this->printTaskInfo("Running Typo3Cms commands...");
+        return parent::run();
+    }
+
+    /**
      * @param $fileName
      * @param array $parameters Array of parameters (will be escaped)
      */
