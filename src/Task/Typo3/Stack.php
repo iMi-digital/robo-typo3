@@ -29,23 +29,27 @@ class Stack extends CommandStack
     }
 
     /**
-     * {@inheritdoc}
+     * @param $fileName
+     * @param array $parameters Array of parameters (will be escaped)
      */
-    public function run()
+    public function execDbDump($fileName, $parameters = [])
     {
-        $this->printTaskInfo("Running Typo3Cms commands...");
-        return parent::run();
-    }
+        $parameters = (array) $parameters;
 
-    public function execDbDump($fileName, $parameters = null)
-    {
-    	$parameters = $parameters ? ' ' . escapeshellarg($parameters) : '';
-	    $this->exec('database:export' . $parameters . ' > ' . $fileName);
+        if (count($parameters)>0) {
+            for ($i = 0; $i<count($parameters); $i++) {
+                $parameters[$i] = '--exclude ' . escapeshellarg($parameters[$i]);
+            }
+        }
+
+        $this->exec('database:export ' . implode(" ",$parameters) . ' > ' . $fileName);
     }
 
     public function execDbDumpExclude($fileName)
     {
-	    $excludeTables = 'cache,cache_tag,be_sessions,sys_log,cf_cache_hash,cf_cache_hash_tags,cf_cache_imagesizes,cf_cache_imagesizes_tags,cf_cache_pages,cf_cache_pages_tags,cf_cache_pagesection_cf_cache_pagesection_tags,cf_cache_rootline,cf_cache_rootline_tags';
-    	$this->execDbDump($fileName, '--exclude-tables ' . $excludeTables);
+        $excludeTables = 'cache,cache_tag,be_sessions,sys_log,cf_cache_hash,cf_cache_hash_tags,cf_cache_imagesizes,cf_cache_imagesizes_tags,cf_cache_pages,cf_cache_pages_tags,cf_cache_pagesection_cf_cache_pagesection_tags,cf_cache_rootline,cf_cache_rootline_tags';
+        $excludeTablesArray = explode(',',$excludeTables);
+
+        $this->execDbDump($fileName, $excludeTablesArray);
     }
 }
