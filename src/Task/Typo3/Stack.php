@@ -45,6 +45,7 @@ class Stack extends CommandStack
     public function execDbDump($fileName, $parameters = [])
     {
         $parameters = (array)$parameters;
+        $parameters = array_map('escapeshellarg', $parameters);
         $this->exec('database:export ' . implode(" ", $parameters) . ' > ' . $fileName);
     }
 
@@ -53,11 +54,13 @@ class Stack extends CommandStack
         $excludeTables = 'cache,cache_tag,be_sessions,sys_log,cf_cache_hash,cf_cache_hash_tags,cf_cache_imagesizes,cf_cache_imagesizes_tags,cf_cache_pages,cf_cache_pages_tags,cf_cache_pagesection_cf_cache_pagesection_tags,cf_cache_rootline,cf_cache_rootline_tags'
     ) {
         $excludeTablesArray = explode(',', $excludeTables);
+        $excludeTablesArrayStreched = [];
 
-        foreach ($excludeTablesArray as $key => $value) {
-            $excludeTablesArray[$key] = '--exclude ' . escapeshellarg($value);
+        foreach ($excludeTablesArray as $excludeTable){
+            array_push(  $excludeTablesArrayStreched,'--exclude');
+            array_push( $excludeTablesArrayStreched, $excludeTable);
         }
 
-        $this->execDbDump($fileName, $excludeTablesArray);
+        $this->execDbDump($fileName, $excludeTablesArrayStreched);
     }
 }
