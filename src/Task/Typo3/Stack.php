@@ -6,24 +6,24 @@ use Robo\Task\CommandStack;
 
 class Stack extends CommandStack
 {
-	/**
-	 * @param null|string $pathToWpcli
-	 *
-	 * @throws \Robo\Exception\TaskException
-	 */
+    /**
+     * @param null|string $pathToWpcli
+     *
+     * @throws \Robo\Exception\TaskException
+     */
     public function __construct($pathToTypo3Cms = null)
     {
         $this->executable = $pathToTypo3Cms;
-        if (!$this->executable) {
+        if ( ! $this->executable) {
             $this->executable = $this->findExecutable('typo3cms');
         }
-        if (!$this->executable) {
+        if ( ! $this->executable) {
             $cmd = 'public/typo3cms';
             if (file_exists($cmd)) {
                 $this->executable = $cmd;
             }
         }
-        if (!$this->executable) {
+        if ( ! $this->executable) {
             throw new TaskException(__CLASS__, "typo3cms installation could be found.");
         }
     }
@@ -34,18 +34,31 @@ class Stack extends CommandStack
     public function run()
     {
         $this->printTaskInfo("Running Typo3Cms commands...");
+
         return parent::run();
     }
 
-    public function execDbDump($fileName, $parameters = null)
+    /**
+     * @param $fileName
+     * @param array $parameters Array of parameters (will be escaped)
+     */
+    public function execDbDump($fileName, $parameters = [])
     {
-    	$parameters = $parameters ? ' ' . escapeshellarg($parameters) : '';
-	    $this->exec('database:export' . $parameters . ' > ' . $fileName);
+        $parameters = (array)$parameters;
+        $parameters = array_map('escapeshellarg', $parameters);
+        $this->exec('database:export ' . implode(" ", $parameters) . ' > ' . $fileName);
     }
 
-    public function execDbDumpExclude($fileName)
-    {
-	    $excludeTables = 'cache,cache_tag,be_sessions,sys_log,cf_cache_hash,cf_cache_hash_tags,cf_cache_imagesizes,cf_cache_imagesizes_tags,cf_cache_pages,cf_cache_pages_tags,cf_cache_pagesection_cf_cache_pagesection_tags,cf_cache_rootline,cf_cache_rootline_tags';
-    	$this->execDbDump($fileName, '--exclude-tables ' . $excludeTables);
+    public function execDbDumpExclude(
+        $fileName,
+        $excludeTables = 'cache,cache_tag,be_sessions,sys_log,cf_cache_hash,cf_cache_hash_tags,cf_cache_imagesizes,cf_cache_imagesizes_tags,cf_cache_pages,cf_cache_pages_tags,cf_cache_pagesection_cf_cache_pagesection_tags,cf_cache_rootline,cf_cache_rootline_tags'
+    ) {
+        $excludeTablesArray = explode(',', $excludeTables);
+        $excludeTablesArrayStreched = [];
+        foreach ($excludeTablesArray as $excludeTable) {
+            array_push($excludeTablesArrayStreched, '--exclude');
+            array_push($excludeTablesArrayStreched, $excludeTable);
+        }
+        $this->execDbDump($fileName, $excludeTablesArrayStreched);
     }
 }
