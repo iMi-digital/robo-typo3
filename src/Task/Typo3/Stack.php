@@ -55,12 +55,10 @@ class Stack extends CommandStack
     ) {
         $excludeTablesArray = explode(',', $excludeTables);
         $excludeTablesArrayStreched = [];
-
-        foreach ($excludeTablesArray as $excludeTable){
-            array_push(  $excludeTablesArrayStreched,'--exclude');
-            array_push( $excludeTablesArrayStreched, $excludeTable);
+        foreach ($excludeTablesArray as $excludeTable) {
+            array_push($excludeTablesArrayStreched, '--exclude');
+            array_push($excludeTablesArrayStreched, $excludeTable);
         }
-
         $this->execDbDump($fileName, $excludeTablesArrayStreched);
     }
 }
